@@ -7,19 +7,31 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// Structs
+// ========== Structs ==========
 
+// Checklist implements ...
 type Checklist struct {
 	ID    string `json:"id,omitempty"`
-	Items string `json:"firstname,omitempty"`
+	Items string `json:"items,omitempty"`
 }
 
 // Functions
 
-func GetChecklists(w http.ResponsWriter, r *http.Request)    {}
-func GetChecklist(w http.ResponsWriter, r *http.Request)     {}
-func CreateChecklists(w http.ResponsWriter, r *http.Request) {}
-func DeleteChecklists(w http.ResponsWriter, r *http.Request) {}
+// GetChecklists ...
+func GetChecklists(w http.ResponseWriter, r *http.Request) {
+}
+
+// GetChecklist ...
+func GetChecklist(w http.ResponseWriter, r *http.Request) {
+}
+
+// CreateChecklist ...
+func CreateChecklist(w http.ResponseWriter, r *http.Request) {
+}
+
+// DeleteChecklist ...
+func DeleteChecklist(w http.ResponseWriter, r *http.Request) {
+}
 
 func main() {
 	router := mux.NewRouter()
