@@ -5,6 +5,10 @@ Following this guide for RESTful API in go:
 https://medium.com/@johnteckert/building-a-restful-api-with-go-part-1-9e234774b14d
 */
 
+// TODO: Expand List struct to include a slice or map of items
+// 			 Map may be preferrable so that the item can have a name and a count
+//			 or status or something.
+
 import (
 	"encoding/json"
 	"github.com/gorilla/mux"
