@@ -1,2 +1,2 @@
-# mirror-api
-Simple API for daily refreshed checklist, written in go for learning purposes.
+# list-api
+Simple API for making and updating checklist, written in go for learning purposes.
