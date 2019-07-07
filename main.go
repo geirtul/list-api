@@ -25,15 +25,16 @@ var lists []List
 
 // Functions
 
-// GetLists ... indexes lists
-func GetLists(w http.ResponseWriter, r *http.Request) {
+// getLists ... indexes lists
+func getLists(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(lists)
 }
 
-// GetList ... show specific checklist
-func GetList(w http.ResponseWriter, r *http.Request) {
+// getList ... show specific checklist
+func getList(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+
 	params := mux.Vars(r)
 	for _, item := range lists {
 		if item.ID == params["id"] {
@@ -43,22 +44,59 @@ func GetList(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// CreateList ... create new checklist
-func CreateList(w http.ResponseWriter, r *http.Request) {
+// createList ... create new checklist
+func createList(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+
 	var newList List
 	json.NewDecoder(r.Body).Decode(&newList)
 	newList.ID = strconv.Itoa(len(lists) + 1)
+
 	lists = append(lists, newList)
+
 	json.NewEncoder(w).Encode(newList)
 }
 
-// UpdateList ... update a checklist
-func UpdateList(w http.ResponseWriter, r *http.Request) {
+// updateList ... update a list
+func updateList(w http.ResponseWriter, r *http.Request) {
+	// Get headers and params
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+
+	// Iterate over lists to find correct list to update
+	for i, item := range lists {
+		if item.ID == params["id"] {
+
+			// remove element i from lists slice
+			// slicing works like python
+			// ... tells Go to treat each element as separate argument
+			lists = append(lists[:i], lists[i+1:]...)
+
+			// Create new, updated list with same id as the old version
+			// of the list
+			var newList List
+			json.NewDecoder(r.Body).Decode(&newList)
+			newList.ID = params["id"]
+			lists = append(lists, newList)
+			json.NewEncoder(w).Encode(newList)
+			return
+		}
+	}
 }
 
-// DeleteList ... delete checklist
-func DeleteList(w http.ResponseWriter, r *http.Request) {
+// deleteList ... delete list
+func deleteList(w http.ResponseWriter, r *http.Request) {
+	// Get headers and params
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+
+	for i, item := range lists {
+		if item.ID == params["id"] {
+			lists = append(lists[:i], lists[i+1:]...)
+			break
+		}
+	}
+	json.NewEncoder(w).Encode(lists)
 }
 
 func main() {
@@ -72,10 +110,10 @@ func main() {
 	router := mux.NewRouter()
 
 	// Endpoints
-	router.HandleFunc("/lists", GetLists).Methods("GET")
-	router.HandleFunc("/lists/{id}", GetList).Methods("GET")
-	router.HandleFunc("/lists/{id}", CreateList).Methods("POST")
-	router.HandleFunc("/lists/{id}", DeleteList).Methods("DELETE")
+	router.HandleFunc("/lists", getLists).Methods("GET")
+	router.HandleFunc("/lists/{id}", getList).Methods("GET")
+	router.HandleFunc("/lists/{id}", createList).Methods("POST")
+	router.HandleFunc("/lists/{id}", deleteList).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(":5000", router))
 }
