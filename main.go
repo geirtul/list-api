@@ -68,6 +68,7 @@ func createList(w http.ResponseWriter, r *http.Request) {
 }
 
 // updateList ... update a list
+// TODO: Should actually use http PATCH instead, but this works
 func updateList(w http.ResponseWriter, r *http.Request) {
 	// Get headers and params
 	w.Header().Set("Content-Type", "application/json")
@@ -124,6 +125,7 @@ func main() {
 	router.HandleFunc("/lists", getLists).Methods("GET")
 	router.HandleFunc("/lists/{id}", getList).Methods("GET")
 	router.HandleFunc("/lists/{id}", createList).Methods("POST")
+	router.HandleFunc("/lists/{id}", updateList).Methods("POST")
 	router.HandleFunc("/lists/{id}", deleteList).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(":5000", router))
