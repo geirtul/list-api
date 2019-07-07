@@ -23,15 +23,18 @@ type List struct {
 
 var lists []List
 
-// Functions
+// ========== Functions ==========
 
 // getLists ... indexes lists
 func getLists(w http.ResponseWriter, r *http.Request) {
+	// Get headers
 	w.Header().Set("Content-Type", "application/json")
+
+	// return json encoded list of existing lists
 	json.NewEncoder(w).Encode(lists)
 }
 
-// getList ... show specific checklist
+// getList ... show specific list
 func getList(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -44,16 +47,19 @@ func getList(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// createList ... create new checklist
+// createList ... create new list
 func createList(w http.ResponseWriter, r *http.Request) {
+	// Get headers
 	w.Header().Set("Content-Type", "application/json")
 
+	// Init new list with decoded json data and append to lists.
 	var newList List
 	json.NewDecoder(r.Body).Decode(&newList)
 	newList.ID = strconv.Itoa(len(lists) + 1)
 
 	lists = append(lists, newList)
 
+	// return json encoded new list
 	json.NewEncoder(w).Encode(newList)
 }
 
@@ -63,7 +69,7 @@ func updateList(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 
-	// Iterate over lists to find correct list to update
+	// Iterate over existing lists to find item with matching ID.
 	for i, item := range lists {
 		if item.ID == params["id"] {
 
@@ -90,6 +96,7 @@ func deleteList(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 
+	// Iterate over existing lists to find matching ID.
 	for i, item := range lists {
 		if item.ID == params["id"] {
 			lists = append(lists[:i], lists[i+1:]...)
