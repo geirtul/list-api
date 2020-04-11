@@ -5,29 +5,44 @@ Following this guide for RESTful API in go:
 https://medium.com/@johnteckert/building-a-restful-api-with-go-part-1-9e234774b14d
 */
 
-// TODO: Expand List struct to include a slice or map of items
-// 			 Map may be preferrable so that the item can have a name and a count
-//			 or status or something.
+// TODO: Implement necessary functions for Item struct
+// TODO: How to add item at list creation?
+// TODO: Add Items to sample data
 
 import (
 	"encoding/json"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
-// ========== Structs ==========
+// ============================================================================
+// STRUCTS
+// ============================================================================
 
-// List implements ...
-type List struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+type Item struct {
+	Name  string `json:"name"`
+	Count int    `json:"count"`
 }
 
+type List struct {
+	ID    string `json:"id"`
+	Name  string `json:"name"`
+	Items []Item `json:"items"`
+}
+
+// Collection of lists
 var lists []List
 
-// ========== Functions ==========
+// ============================================================================
+// FUNCTIONS
+// ============================================================================
+
+// ========== Item-functions
+
+// ========== List-functions
 
 // getLists ... indexes lists
 func getLists(w http.ResponseWriter, r *http.Request) {
@@ -95,7 +110,7 @@ func updateList(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// deleteList ... delete list
+// deleteList ... delete a list
 func deleteList(w http.ResponseWriter, r *http.Request) {
 	// Get headers and params
 	w.Header().Set("Content-Type", "application/json")
@@ -114,9 +129,29 @@ func deleteList(w http.ResponseWriter, r *http.Request) {
 func main() {
 
 	// Sample data
+
 	lists = append(lists,
-		List{ID: "1", Name: "Katter"},
-		List{ID: "2", Name: "Planter"})
+		List{
+			ID:   "1",
+			Name: "Katter",
+			Items: []Item{
+				Item{Name: "Asmo", Count: 1},
+				Item{Name: "Luci", Count: 1}},
+		},
+		List{
+			ID:   "2",
+			Name: "Planter",
+			Items: []Item{
+				Item{Name: "Grønne", Count: 2},
+				Item{Name: "Gule", Count: 3}},
+		},
+		List{
+			ID:   "3",
+			Name: "Handleliste",
+			Items: []Item{
+				Item{Name: "Ost", Count: 1},
+				Item{Name: "Melk", Count: 1}},
+		})
 
 	// Initialize router
 	router := mux.NewRouter()
