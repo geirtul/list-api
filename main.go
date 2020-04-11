@@ -91,8 +91,8 @@ func updateList(w http.ResponseWriter, r *http.Request) {
 		if item.ID == params["id"] {
 
 			// Check for params to patch
-			name, name_ok = params["name"]
-			items, items_ok = params["items"]
+			name, name_ok := params["name"]
+			items, items_ok := params["items"]
 
 			// Patch the values
 			if name_ok {
