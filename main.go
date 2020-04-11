@@ -5,9 +5,7 @@ Following this guide for RESTful API in go:
 https://medium.com/@johnteckert/building-a-restful-api-with-go-part-1-9e234774b14d
 */
 
-// TODO: Implement necessary functions for Item struct
-// TODO: How to add item at list creation?
-// TODO: Add Items to sample data
+// TODO: implement GET and POST for Item
 
 import (
 	"encoding/json"
@@ -39,8 +37,6 @@ var lists []List
 // ============================================================================
 // FUNCTIONS
 // ============================================================================
-
-// ========== Item-functions
 
 // ========== List-functions
 
