@@ -5,7 +5,8 @@ Following this guide for RESTful API in go:
 https://medium.com/@johnteckert/building-a-restful-api-with-go-part-1-9e234774b14d
 */
 
-// TODO: implement GET and POST for Item
+// TODO: updateList should use PATCH, not POST.
+// TODO: How should a list update work? Patch []Items as a whole?
 
 import (
 	"encoding/json"
@@ -89,19 +90,35 @@ func updateList(w http.ResponseWriter, r *http.Request) {
 	for i, item := range lists {
 		if item.ID == params["id"] {
 
-			// remove element i from lists slice
-			// slicing works like python
-			// ... tells Go to treat each element as separate argument
-			lists = append(lists[:i], lists[i+1:]...)
+			// Check for params to patch
+			name, name_ok = params["name"]
+			items, items_ok = params["items"]
 
-			// Create new, updated list with same id as the old version
-			// of the list
-			var newList List
-			json.NewDecoder(r.Body).Decode(&newList)
-			newList.ID = params["id"]
-			lists = append(lists, newList)
-			json.NewEncoder(w).Encode(newList)
-			return
+			// Patch the values
+			if name_ok {
+				item.Name = name
+			}
+			if items_ok {
+				item.Items = items
+			}
+
+			// Encode the updated list
+			json.NewEncoder(w).Encode(lists)
+			// TODO: Check if more parts are needed from this
+			/*
+				// remove element i from lists slice
+				// slicing works like python
+				// ... tells Go to treat each element as separate argument
+				lists = append(lists[:i], lists[i+1:]...)
+
+				// Create new, updated list with same id as the old version
+				// of the list
+				var newList List
+				json.NewDecoder(r.Body).Decode(&newList)
+				newList.ID = params["id"]
+				lists = append(lists, newList)
+				json.NewEncoder(w).Encode(newList)
+			*/
 		}
 	}
 }
@@ -156,7 +173,7 @@ func main() {
 	router.HandleFunc("/lists", getLists).Methods("GET")
 	router.HandleFunc("/lists/{id}", getList).Methods("GET")
 	router.HandleFunc("/lists/{id}", createList).Methods("POST")
-	router.HandleFunc("/lists/{id}", updateList).Methods("POST")
+	router.HandleFunc("/lists/{id}", updateList).Methods("PATCH")
 	router.HandleFunc("/lists/{id}", deleteList).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(":5000", router))
